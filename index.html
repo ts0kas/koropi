@@ -1,0 +1,600 @@
+<!-- v1.0 - αρχικό design Grand Barbers -->
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grand Barbers — Men's Cave | Κορωπί</title>
+  <meta name="description" content="Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί. Haircuts & Grooming με 4.9★. Κλείσε ραντεβού σήμερα.">
+  <meta property="og:title" content="Grand Barbers — Men's Cave">
+  <meta property="og:description" content="Where Every Cut Tells a Story. Premium κουρείο στο Κορωπί.">
+  <meta property="og:image" content="images/interior-wide.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'deep': '#110A05',
+            'surface': '#1E1008',
+            'gold': '#C4922A',
+            'gold-light': '#D4A843',
+            'cream': '#F0E6C8',
+            'muted': '#8A7050',
+          },
+          fontFamily: {
+            'heading': ['Playfair Display', 'serif'],
+            'body': ['Lato', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BarberShop",
+    "name": "Grand Barbers Men's Cave",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Γεωρ. Παπασιδέρη 4",
+      "addressLocality": "Κορωπί",
+      "postalCode": "194 00",
+      "addressCountry": "GR"
+    },
+    "telephone": "+302106624445",
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "116" }
+  }
+  </script>
+  <style>
+    :root {
+      --bg-deep: #110A05;
+      --bg-surface: #1E1008;
+      --gold: #C4922A;
+      --gold-light: #D4A843;
+      --cream: #F0E6C8;
+      --muted: #8A7050;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg-deep); color: var(--cream); font-family: 'Lato', sans-serif; line-height: 1.7; overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; letter-spacing: -0.02em; line-height: 1.15; }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s ease, padding 0.4s ease;
+    }
+    #navbar.scrolled { background: rgba(17,10,5,0.97); padding: 0.8rem 2.5rem; box-shadow: 0 4px 30px rgba(0,0,0,0.6); }
+    .nav-logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; }
+    .nav-logo img { width: 46px; height: 46px; object-fit: contain; border-radius: 4px; }
+    .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; opacity: 0.8; transition: color 0.2s ease, opacity 0.2s ease; }
+    .nav-links a:hover { color: var(--gold); opacity: 1; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .lang-toggle { display: flex; background: rgba(196,146,42,0.1); border: 1px solid rgba(196,146,42,0.25); border-radius: 3px; overflow: hidden; }
+    .lang-toggle button { padding: 0.28rem 0.65rem; font-size: 0.68rem; letter-spacing: 0.1em; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: background 0.2s ease, color 0.2s ease; }
+    .lang-toggle button.active { background: var(--gold); color: var(--bg-deep); }
+    .nav-call { display: flex; align-items: center; gap: 0.4rem; background: var(--gold); color: var(--bg-deep); padding: 0.45rem 1.1rem; border-radius: 2px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-decoration: none; transition: background 0.2s ease, transform 0.1s ease; }
+    .nav-call:hover { background: var(--gold-light); }
+    .nav-call:active { transform: scale(0.98); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--cream); transition: transform 0.3s ease, opacity 0.3s ease; }
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav { display: none; position: fixed; inset: 0; background: var(--bg-deep); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 2.2rem; }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--cream); text-decoration: none; transition: color 0.2s ease; }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    #hero { position: relative; min-height: 100vh; display: grid; grid-template-columns: 55% 45%; overflow: hidden; }
+    .hero-image-wrap { position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%); }
+    .hero-image-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.12); transition: transform 0.05s linear; }
+    .hero-image-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(17,10,5,0.1) 30%, rgba(17,10,5,0.92) 100%), linear-gradient(to bottom, rgba(17,10,5,0.15) 0%, rgba(17,10,5,0.4) 100%); }
+    .hero-content { display: flex; flex-direction: column; justify-content: center; padding: 8rem 3.5rem 4rem 2rem; }
+    .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 1.3rem; display: flex; align-items: center; gap: 0.8rem; }
+    .hero-eyebrow::before { content: ''; display: block; width: 35px; height: 1px; background: var(--gold); }
+    .hero-title { font-size: clamp(3.8rem, 5.5vw, 7rem); color: var(--cream); font-weight: 700; margin-bottom: 0.4rem; line-height: 0.95; }
+    .hero-title em { font-style: italic; color: var(--gold); display: block; }
+    .hero-subtitle { font-size: clamp(0.95rem, 1.3vw, 1.2rem); color: var(--muted); font-weight: 300; margin-bottom: 2.8rem; min-height: 1.8em; letter-spacing: 0.02em; }
+    .hero-cta-group { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .btn-gold { display: inline-block; background: var(--gold); color: var(--bg-deep); padding: 0.85rem 2rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: background 0.2s ease, transform 0.1s ease; box-shadow: 0 8px 24px rgba(196,146,42,0.3), 0 2px 6px rgba(0,0,0,0.5); }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-gold:active { transform: translateY(0); }
+    .btn-outline { display: inline-block; border: 1px solid rgba(240,230,200,0.25); color: var(--cream); padding: 0.85rem 2rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: border-color 0.2s ease, color 0.2s ease, transform 0.1s ease; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .hero-rating { margin-top: 3rem; display: flex; align-items: center; gap: 0.8rem; padding-top: 2rem; border-top: 1px solid rgba(240,230,200,0.08); }
+    .hero-stars { color: var(--gold); font-size: 0.95rem; letter-spacing: 0.05em; }
+    .hero-rating-score { font-size: 1.05rem; font-weight: 700; color: var(--cream); }
+    .hero-rating-text { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── STATS ── */
+    .stats-strip { background: var(--bg-surface); border-top: 1px solid rgba(196,146,42,0.2); border-bottom: 1px solid rgba(196,146,42,0.2); display: flex; justify-content: center; }
+    .stat-item { flex: 1; max-width: 220px; text-align: center; padding: 2rem; border-right: 1px solid rgba(196,146,42,0.12); }
+    .stat-item:last-child { border-right: none; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-label { font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── SECTION BASE ── */
+    .section-wrap { padding: 6rem 2rem; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-eyebrow { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+    .section-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gold); }
+    .section-title { font-size: clamp(2rem, 3.5vw, 3rem); color: var(--cream); margin-bottom: 3rem; }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    /* ── SERVICES ── */
+    .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(196,146,42,0.12); border: 1px solid rgba(196,146,42,0.12); }
+    .service-card { background: var(--bg-deep); padding: 2.5rem 1.8rem; position: relative; overflow: hidden; opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease, background 0.3s ease; }
+    .service-card.visible { opacity: 1; transform: translateY(0); }
+    .service-card:hover { background: #1a0d07; }
+    .service-card::after { content: ''; position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: var(--gold); transition: width 0.35s ease; }
+    .service-card:hover::after { width: 100%; }
+    .service-icon { font-size: 1.6rem; margin-bottom: 1.2rem; display: block; }
+    .service-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--cream); margin-bottom: 0.6rem; }
+    .service-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+    .service-price { margin-top: 1.5rem; font-size: 1.05rem; color: var(--gold); font-weight: 700; }
+
+    /* ── ABOUT ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about-image-wrap { position: relative; opacity: 0; transform: translateX(-45px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .about-image-wrap.visible { opacity: 1; transform: translateX(0); }
+    .about-image-wrap img { width: 100%; height: 520px; object-fit: cover; object-position: center; filter: sepia(8%) contrast(108%); }
+    .about-image-wrap::after { content: ''; position: absolute; top: -18px; right: -18px; width: 55%; height: 55%; border: 1px solid rgba(196,146,42,0.25); z-index: -1; pointer-events: none; }
+    .about-text { opacity: 0; transform: translateX(45px); transition: opacity 0.7s ease 0.18s, transform 0.7s ease 0.18s; }
+    .about-text.visible { opacity: 1; transform: translateX(0); }
+    .about-text p { color: var(--muted); font-size: 0.93rem; line-height: 1.85; margin-bottom: 1.1rem; }
+
+    /* ── REVIEWS ── */
+    .reviews-track { display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: rgba(196,146,42,0.3) transparent; }
+    .reviews-track::-webkit-scrollbar { height: 3px; }
+    .reviews-track::-webkit-scrollbar-thumb { background: rgba(196,146,42,0.3); border-radius: 2px; }
+    .review-card { min-width: 340px; background: var(--bg-deep); border: 1px solid rgba(196,146,42,0.13); padding: 2rem; flex-shrink: 0; opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .review-card.visible { opacity: 1; transform: translateY(0); }
+    .review-stars { color: var(--gold); font-size: 0.88rem; margin-bottom: 1rem; letter-spacing: 0.05em; }
+    .review-text { font-size: 0.86rem; color: rgba(240,230,200,0.78); line-height: 1.75; font-style: italic; margin-bottom: 1.2rem; }
+    .review-author { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+    .review-date { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── GALLERY ── */
+    .gallery-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 4px; }
+    .gallery-item { overflow: hidden; position: relative; cursor: pointer; opacity: 0; transform: scale(0.97); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .gallery-item.visible { opacity: 1; transform: scale(1); }
+    .gallery-item:first-child { grid-row: 1 / 3; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.82) sepia(6%); transition: transform 0.5s ease, filter 0.35s ease; }
+    .gallery-item:hover img { transform: scale(1.06); filter: brightness(0.98) sepia(0%); }
+    .gallery-overlay { position: absolute; inset: 0; background: rgba(196,146,42,0); display: flex; align-items: center; justify-content: center; transition: background 0.3s ease; }
+    .gallery-overlay span { color: rgba(255,255,255,0.9); font-size: 1.8rem; opacity: 0; transition: opacity 0.3s ease; }
+    .gallery-item:hover .gallery-overlay { background: rgba(196,146,42,0.12); }
+    .gallery-item:hover .gallery-overlay span { opacity: 1; }
+
+    /* ── LIGHTBOX ── */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 200; align-items: center; justify-content: center; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; }
+    .lightbox-close { position: absolute; top: 1.5rem; right: 1.8rem; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 2rem; cursor: pointer; transition: color 0.2s ease; line-height: 1; }
+    .lightbox-close:hover { color: white; }
+
+    /* ── CTA ── */
+    .cta-section { text-align: center; padding: 7rem 2rem; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(196,146,42,0.07) 0%, transparent 65%); pointer-events: none; }
+    .cta-title { font-size: clamp(2.2rem, 4vw, 3.8rem); color: var(--cream); margin-bottom: 1rem; }
+    .cta-sub { font-size: 0.9rem; color: var(--muted); margin-bottom: 2.5rem; letter-spacing: 0.05em; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--bg-surface); border-top: 1px solid rgba(196,146,42,0.18); padding: 4.5rem 2rem 2rem; }
+    .footer-grid { max-width: 1200px; margin: 0 auto 3rem; display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 3rem; }
+    .footer-brand img { width: 58px; margin-bottom: 1rem; opacity: 0.9; border-radius: 4px; }
+    .footer-brand p { font-size: 0.83rem; color: var(--muted); line-height: 1.75; }
+    .footer-title { font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 1.2rem; }
+    .footer-info p, .footer-info a { font-size: 0.83rem; color: var(--muted); line-height: 2.1; text-decoration: none; display: block; transition: color 0.2s ease; }
+    .footer-info a:hover { color: var(--cream); }
+    .footer-hours p { font-size: 0.83rem; color: var(--muted); line-height: 2.1; }
+    .footer-hours .open-now { color: #6abf69; font-weight: 700; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid rgba(196,146,42,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: var(--muted); }
+
+    /* ── WHATSAPP ── */
+    .wa-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 90; width: 54px; height: 54px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.35); text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 26px rgba(37,211,102,0.55), 0 3px 10px rgba(0,0,0,0.3); }
+    .wa-float svg { width: 28px; height: 28px; fill: white; }
+
+    /* ── COOKIE ── */
+    #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid rgba(196,146,42,0.28); padding: 1.1rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 150; gap: 2rem; }
+    #cookie-banner p { font-size: 0.8rem; color: var(--muted); }
+    #cookie-banner button { white-space: nowrap; background: var(--gold); color: var(--bg-deep); border: none; padding: 0.5rem 1.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; border-radius: 2px; transition: background 0.2s ease; }
+    #cookie-banner button:hover { background: var(--gold-light); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-image-wrap { position: absolute; inset: 0; clip-path: none; }
+      .hero-image-wrap::before { content: ''; position: absolute; inset: 0; background: rgba(17,10,5,0.72); z-index: 1; }
+      .hero-image-wrap img { height: 100%; }
+      .hero-image-overlay { z-index: 1; }
+      .hero-content { position: relative; z-index: 2; width: 100%; padding: 8rem 1.5rem 4rem; text-align: center; justify-content: flex-end; min-height: 100vh; }
+      .hero-eyebrow { justify-content: center; }
+      .hero-cta-group { justify-content: center; }
+      .hero-rating { justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-image-wrap::after { display: none; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-call span.call-text { display: none; }
+      .stats-strip { flex-wrap: wrap; }
+      .stat-item { min-width: 45%; border-right: none; border-bottom: 1px solid rgba(196,146,42,0.1); }
+      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .gallery-item:first-child { grid-row: auto; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / 3; }
+    }
+    @media (max-width: 600px) {
+      .hero-title { font-size: 3rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: 1; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      #cookie-banner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════ NAVBAR -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="images/logo.jpg" alt="Grand Barbers">
+    <span class="nav-logo-text">Grand Barbers</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html" data-el="Αρχική" data-en="Home">Αρχική</a></li>
+    <li><a href="services.html" data-el="Υπηρεσίες" data-en="Services">Υπηρεσίες</a></li>
+    <li><a href="book.html" data-el="Ραντεβού" data-en="Book">Ραντεβού</a></li>
+    <li><a href="gallery.html" data-el="Gallery" data-en="Gallery">Gallery</a></li>
+    <li><a href="about.html" data-el="Σχετικά" data-en="About">Σχετικά</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button id="btn-el" class="active" onclick="setLang('el')">ΕΛ</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="tel:+302106624445" class="nav-call">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.2 2 2 0 012.1 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      <span class="call-text">210 662 4445</span>
+    </a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Μενού">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="toggleMenu()" data-el="Αρχική" data-en="Home">Αρχική</a>
+  <a href="services.html" onclick="toggleMenu()" data-el="Υπηρεσίες" data-en="Services">Υπηρεσίες</a>
+  <a href="book.html" onclick="toggleMenu()" data-el="Ραντεβού" data-en="Book">Ραντεβού</a>
+  <a href="gallery.html" onclick="toggleMenu()" data-el="Gallery" data-en="Gallery">Gallery</a>
+  <a href="about.html" onclick="toggleMenu()" data-el="Σχετικά" data-en="About">Σχετικά</a>
+  <a href="tel:+302106624445" style="font-size:1.1rem; color:var(--gold); font-family:'Lato',sans-serif; font-weight:700; letter-spacing:0.05em;">210 662 4445</a>
+</div>
+
+
+<!-- ════════════════════════ HERO -->
+<section id="hero">
+  <div class="hero-image-wrap">
+    <img id="heroImg" src="images/interior-wide.png" alt="Grand Barbers Interior" loading="eager">
+    <div class="hero-image-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" data-el="Men's Cave · Est. 2022 · Κορωπί" data-en="Men's Cave · Est. 2022 · Koropi">Men's Cave · Est. 2022 · Κορωπί</p>
+    <h1 class="hero-title">
+      Grand<br><em>Barbers</em>
+    </h1>
+    <p class="hero-subtitle" id="typewriterEl"></p>
+    <div class="hero-cta-group">
+      <a href="book.html" class="btn-gold" data-el="Κλείσε Ραντεβού" data-en="Book Now">Κλείσε Ραντεβού</a>
+      <a href="gallery.html" class="btn-outline" data-el="Δες το Χώρο" data-en="See the Space">Δες το Χώρο</a>
+    </div>
+    <div class="hero-rating">
+      <span class="hero-stars">★★★★★</span>
+      <span class="hero-rating-score">4.9</span>
+      <span class="hero-rating-text" data-el="από 116 αξιολογήσεις Google" data-en="from 116 Google reviews">από 116 αξιολογήσεις Google</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════ STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-value">4.9★</div>
+    <div class="stat-label" data-el="Google Rating" data-en="Google Rating">Google Rating</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">116+</div>
+    <div class="stat-label" data-el="Κριτικές" data-en="Reviews">Κριτικές</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">2022</div>
+    <div class="stat-label" data-el="Ίδρυση" data-en="Established">Ίδρυση</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">Κορωπί</div>
+    <div class="stat-label" data-el="Αττική" data-en="Attica">Αττική</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════ SERVICES -->
+<div style="background:var(--bg-deep);">
+  <div class="section-wrap">
+    <div class="section-inner">
+      <p class="section-eyebrow" data-el="Τι προσφέρουμε" data-en="What we offer">Τι προσφέρουμε</p>
+      <h2 class="section-title" data-el="Υπηρεσίες &amp; <em>Τιμές</em>" data-en="Services &amp; <em>Prices</em>">Υπηρεσίες &amp; <em>Τιμές</em></h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <span class="service-icon">✂️</span>
+          <div class="service-name" data-el="Κούρεμα" data-en="Haircut">Κούρεμα</div>
+          <p class="service-desc" data-el="Classic, fade, modern styles. Εξατομικευμένο αποτέλεσμα για κάθε τύπο μαλλιών." data-en="Classic, fade, modern styles. Personalized result for every hair type.">Classic, fade, modern styles. Εξατομικευμένο αποτέλεσμα για κάθε τύπο μαλλιών.</p>
+          <div class="service-price" data-el="από €12" data-en="from €12">από €12</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🪒</span>
+          <div class="service-name" data-el="Ξύρισμα Γενειάδας" data-en="Beard Shave">Ξύρισμα Γενειάδας</div>
+          <p class="service-desc" data-el="Παραδοσιακό ξύρισμα με hot towel, shaving brush και premium προϊόντα." data-en="Traditional hot towel shave with shaving brush and premium products.">Παραδοσιακό ξύρισμα με hot towel, shaving brush και premium προϊόντα.</p>
+          <div class="service-price" data-el="από €10" data-en="from €10">από €10</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">💈</span>
+          <div class="service-name" data-el="Κούρεμα + Γενειάδα" data-en="Cut + Beard Combo">Κούρεμα + Γενειάδα</div>
+          <p class="service-desc" data-el="Το πλήρες grooming package. Κούρεμα, περιποίηση & styling σε μία επίσκεψη." data-en="The full grooming package. Cut, beard care & styling in one visit.">Το πλήρες grooming package. Κούρεμα, περιποίηση & styling σε μία επίσκεψη.</p>
+          <div class="service-price" data-el="από €20" data-en="from €20">από €20</div>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">👦</span>
+          <div class="service-name" data-el="Παιδικό Κούρεμα" data-en="Kids Haircut">Παιδικό Κούρεμα</div>
+          <p class="service-desc" data-el="Για τους μικρούς άντρες. Φιλικό περιβάλλον, άνετη εμπειρία για κάθε ηλικία." data-en="For the little guys. Friendly environment, comfortable experience for every age.">Για τους μικρούς άντρες. Φιλικό περιβάλλον, άνετη εμπειρία για κάθε ηλικία.</p>
+          <div class="service-price" data-el="από €8" data-en="from €8">από €8</div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:2.5rem;">
+        <a href="services.html" class="btn-outline" data-el="Όλες οι υπηρεσίες →" data-en="All services →">Όλες οι υπηρεσίες →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════ ABOUT -->
+<div style="background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.1); border-bottom:1px solid rgba(196,146,42,0.1);">
+  <div class="section-wrap">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-image-wrap" id="aboutImg">
+          <img src="images/detail-desk.png" alt="Grand Barbers — vintage desk detail" loading="lazy">
+        </div>
+        <div class="about-text" id="aboutText">
+          <p class="section-eyebrow" data-el="Η ιστορία μας" data-en="Our story">Η ιστορία μας</p>
+          <h2 class="section-title" data-el="Ένα μέρος που <em>θυμίζει</em> άλλη εποχή" data-en="A place that <em>feels</em> like another era">Ένα μέρος που <em>θυμίζει</em> άλλη εποχή</h2>
+          <p data-el="Το Grand Barbers δεν είναι απλά ένα κουρείο. Είναι ένας χώρος όπου κάθε λεπτομέρεια — από τα εκθαμβωτικά τούβλα και τους χρυσούς καθρέφτες μέχρι το vintage ρολόι τηλέφωνο στη ρεσεψιόν — έχει επιλεγεί για να σε μεταφέρει σε μια άλλη εποχή." data-en="Grand Barbers is not just a barbershop. It's a space where every detail — from the stunning exposed brick and gold mirrors to the vintage rotary phone at reception — has been chosen to transport you to another era.">Το Grand Barbers δεν είναι απλά ένα κουρείο. Είναι ένας χώρος όπου κάθε λεπτομέρεια — από τα εκθαμβωτικά τούβλα και τους χρυσούς καθρέφτες μέχρι το vintage ρολόι τηλέφωνο στη ρεσεψιόν — έχει επιλεγεί για να σε μεταφέρει σε μια άλλη εποχή.</p>
+          <p data-el="Ιδρύθηκε το 2022, και από την πρώτη μέρα αξιολογείται με 4.9/5 από τους πελάτες μας. Εδώ δεν έρχεσαι απλώς για κούρεμα — έρχεσαι για εμπειρία." data-en="Founded in 2022 and consistently rated 4.9/5 by our clients. You don't just come here for a haircut — you come for an experience.">Ιδρύθηκε το 2022, και από την πρώτη μέρα αξιολογείται με 4.9/5 από τους πελάτες μας. Εδώ δεν έρχεσαι απλώς για κούρεμα — έρχεσαι για εμπειρία.</p>
+          <a href="about.html" class="btn-gold" style="margin-top:1.8rem; display:inline-block;" data-el="Μάθε περισσότερα" data-en="Learn more">Μάθε περισσότερα</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════ REVIEWS -->
+<div style="background:var(--bg-deep); padding:6rem 0;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 2rem;">
+    <p class="section-eyebrow" data-el="Τι λένε οι πελάτες" data-en="What clients say">Τι λένε οι πελάτες</p>
+    <h2 class="section-title" data-el="<em>Αληθινές</em> Εμπειρίες" data-en="<em>Real</em> Experiences"><em>Αληθινές</em> Εμπειρίες</h2>
+    <div class="reviews-track" id="reviewsTrack">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text" data-el='"Εξαιρετικοί, όλα τα παιδιά είναι άψογοι επαγγελματίες με ευχάριστη διάθεση που σου προσφέρουν μια πραγματική εμπειρία περιποίησης μέσα σε ένα εντυπωσιακό χώρο που δύσκολα μπορείς να βρεις, τους συνιστώ ανεπιφύλακτα."' data-en='"Outstanding — every single person is an impeccable professional with a fantastic attitude. They offer a truly premium grooming experience in a stunning space unlike anything else. Highly recommended."'>"Εξαιρετικοί, όλα τα παιδιά είναι άψογοι επαγγελματίες με ευχάριστη διάθεση που σου προσφέρουν μια πραγματική εμπειρία περιποίησης μέσα σε ένα εντυπωσιακό χώρο που δύσκολα μπορείς να βρεις, τους συνιστώ ανεπιφύλακτα."</p>
+        <div class="review-author">Γιώργος Γκίνης</div>
+        <div class="review-date" data-el="πριν από 2 μήνες" data-en="2 months ago">πριν από 2 μήνες</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text" data-el='"Εξαιρετικός χώρος που θυμίζει μπαρμπέρικο εξωτερικού, εξαιρετικά παιδιά, και σταθερά πολύ καλό κούρεμα. Πάντα συνεπείς στο ραντεβού, χωρίς καθυστερήσεις. Εδώ και χρόνια είναι η αποκλειστική μου επιλογή."' data-en='"An extraordinary space that feels like an international barbershop, outstanding staff, and consistently excellent haircuts. Always on time, no delays. For years now, my one and only choice."'>"Εξαιρετικός χώρος που θυμίζει μπαρμπέρικο εξωτερικού, εξαιρετικά παιδιά, και σταθερά πολύ καλό κούρεμα. Πάντα συνεπείς στο ραντεβού, χωρίς καθυστερήσεις. Εδώ και χρόνια είναι η αποκλειστική μου επιλογή."</p>
+        <div class="review-author">Vassilis Protonotarios</div>
+        <div class="review-date" data-el="πριν από 5 μήνες" data-en="5 months ago">πριν από 5 μήνες</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text" data-el='"Πολύ καλά παιδιά και γνώστες του αντικειμένου τους, ωραίος χώρος, καμία σχέση με τα δήθεν μπαρμπέρικα που ξεφυτρώνουν."' data-en='"Very skilled guys who really know their craft. Beautiful space — nothing like the generic wannabe barbershops popping up everywhere."'>"Πολύ καλά παιδιά και γνώστες του αντικειμένου τους, ωραίος χώρος, καμία σχέση με τα δήθεν μπαρμπέρικα που ξεφυτρώνουν."</p>
+        <div class="review-author">Constantinos Karagiannis</div>
+        <div class="review-date" data-el="πριν από 3 μήνες" data-en="3 months ago">πριν από 3 μήνες</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════ GALLERY TEASER -->
+<div style="background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.1); padding:6rem 0;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 2rem;">
+    <p class="section-eyebrow" data-el="Ο χώρος μας" data-en="Our space">Ο χώρος μας</p>
+    <h2 class="section-title" data-el="Ζήσε την <em>Ατμόσφαιρα</em>" data-en="Experience the <em>Atmosphere</em>">Ζήσε την <em>Ατμόσφαιρα</em></h2>
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('images/interior-wide.png')">
+        <img src="images/interior-wide.png" alt="Grand Barbers Interior" loading="lazy">
+        <div class="gallery-overlay"><span>⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('images/chairs.png')">
+        <img src="images/chairs.png" alt="Barber Chairs" loading="lazy">
+        <div class="gallery-overlay"><span>⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('images/detail-desk.png')">
+        <img src="images/detail-desk.png" alt="Reception Desk" loading="lazy">
+        <div class="gallery-overlay"><span>⊕</span></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:2rem;">
+      <a href="gallery.html" class="btn-outline" data-el="Δες όλες τις φωτογραφίες →" data-en="View all photos →">Δες όλες τις φωτογραφίες →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="Grand Barbers">
+</div>
+
+
+<!-- ════════════════════════ CTA -->
+<div style="background:var(--bg-deep); border-top:1px solid rgba(196,146,42,0.12);">
+  <div class="cta-section">
+    <p class="section-eyebrow" style="justify-content:center; margin-bottom:1.5rem;" data-el="Είσαι έτοιμος;" data-en="Ready?">Είσαι έτοιμος;</p>
+    <h2 class="cta-title" data-el="Κλείσε το Ραντεβού σου <em>Σήμερα</em>" data-en="Book Your Appointment <em>Today</em>">Κλείσε το Ραντεβού σου <em>Σήμερα</em></h2>
+    <p class="cta-sub" data-el="Γεωρ. Παπασιδέρη 4, Κορωπί · 210 662 4445" data-en="Georgiou Papasideri 4, Koropi · 210 662 4445">Γεωρ. Παπασιδέρη 4, Κορωπί · 210 662 4445</p>
+    <a href="book.html" class="btn-gold" style="font-size:0.82rem; padding:1rem 2.8rem;" data-el="Κλείσε Ραντεβού" data-en="Book Now">Κλείσε Ραντεβού</a>
+  </div>
+</div>
+
+
+<!-- ════════════════════════ FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" alt="Grand Barbers Logo">
+      <p data-el="Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Haircuts & Grooming. Est. 2022." data-en="Grand Barbers Men's Cave — Premium barbershop in Koropi, Attica. Haircuts & Grooming. Est. 2022.">Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Haircuts & Grooming. Est. 2022.</p>
+    </div>
+    <div class="footer-info">
+      <p class="footer-title" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</p>
+      <a href="https://maps.google.com/?q=Γεωρ.+Παπασιδέρη+4+Κορωπί" target="_blank" rel="noopener">📍 Γεωρ. Παπασιδέρη 4, Κορωπί</a>
+      <a href="tel:+302106624445">📞 210 662 4445</a>
+      <a href="https://maps.google.com/?q=Grand+Barbers+Κορωπί" target="_blank" rel="noopener" data-el="🗺 Οδηγίες Google Maps" data-en="🗺 Google Maps Directions">🗺 Οδηγίες Google Maps</a>
+    </div>
+    <div class="footer-hours">
+      <p class="footer-title" data-el="Ωράριο" data-en="Hours">Ωράριο</p>
+      <p data-el="Δευτέρα – Παρασκευή: 09:00 – 20:00" data-en="Monday – Friday: 09:00 – 20:00">Δευτέρα – Παρασκευή: 09:00 – 20:00</p>
+      <p data-el="Σάββατο: 09:00 – 18:00" data-en="Saturday: 09:00 – 18:00">Σάββατο: 09:00 – 18:00</p>
+      <p data-el="Κυριακή: Κλειστά" data-en="Sunday: Closed">Κυριακή: Κλειστά</p>
+      <p class="open-now" data-el="● Τώρα Ανοιχτά" data-en="● Open Now">● Τώρα Ανοιχτά</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Grand Barbers Men's Cave · Κορωπί</span>
+    <span data-el="Σχεδιασμός με ♥" data-en="Designed with ♥">Σχεδιασμός με ♥</span>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════ WHATSAPP -->
+<a href="https://wa.me/302106624445" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+
+<!-- ════════════════════════ COOKIE BANNER -->
+<div id="cookie-banner">
+  <p data-el="Χρησιμοποιούμε cookies για την καλύτερη εμπειρία. Συνεχίζοντας, αποδέχεστε την πολιτική μας." data-en="We use cookies to enhance your experience. By continuing, you accept our policy.">Χρησιμοποιούμε cookies για την καλύτερη εμπειρία. Συνεχίζοντας, αποδέχεστε την πολιτική μας.</p>
+  <button onclick="acceptCookies()" data-el="Αποδοχή" data-en="Accept">Αποδοχή</button>
+</div>
+
+
+<script>
+  /* ── LANGUAGE ── */
+  let currentLang = 'el';
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById('btn-el').classList.toggle('active', lang === 'el');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-el]').forEach(el => {
+      const val = lang === 'el' ? el.getAttribute('data-el') : el.getAttribute('data-en');
+      if (val !== null) el.innerHTML = val;
+    });
+    clearTypewriter(); startTypewriter();
+  }
+
+  /* ── TYPEWRITER ── */
+  const slogan = 'Where Every Cut Tells a Story.';
+  let twTimer = null;
+  function clearTypewriter() { if (twTimer) clearTimeout(twTimer); document.getElementById('typewriterEl').textContent = ''; }
+  function startTypewriter() {
+    const el = document.getElementById('typewriterEl');
+    let i = 0; el.textContent = '';
+    function type() { if (i < slogan.length) { el.textContent += slogan[i++]; twTimer = setTimeout(type, 52); } }
+    setTimeout(type, 900);
+  }
+  startTypewriter();
+
+  /* ── PARALLAX ── */
+  const heroImg = document.getElementById('heroImg');
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const s = window.scrollY;
+        if (s < window.innerHeight * 1.2) heroImg.style.transform = `scale(1.12) translateY(${s * 0.12}px)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  /* ── NAVBAR SCROLL ── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+
+  /* ── SCROLL REVEAL ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), parseInt(entry.target.dataset.delay || 0));
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.service-card').forEach((el, i) => { el.dataset.delay = i * 90; observer.observe(el); });
+  document.querySelectorAll('.review-card').forEach((el, i) => { el.dataset.delay = i * 140; observer.observe(el); });
+  document.querySelectorAll('.gallery-item').forEach((el, i) => { el.dataset.delay = i * 100; observer.observe(el); });
+  ['aboutImg', 'aboutText'].forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
+
+  /* ── LIGHTBOX ── */
+  function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  /* ── MOBILE MENU ── */
+  function toggleMenu() {
+    const mn = document.getElementById('mobileNav');
+    mn.classList.toggle('open');
+    document.body.style.overflow = mn.classList.contains('open') ? 'hidden' : '';
+  }
+
+  /* ── COOKIES ── */
+  if (localStorage.getItem('gb_cookies')) document.getElementById('cookie-banner').style.display = 'none';
+  function acceptCookies() { localStorage.setItem('gb_cookies', '1'); document.getElementById('cookie-banner').style.display = 'none'; }
+</script>
+
+</body>
+</html>

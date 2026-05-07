@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — Grand Barbers Men's Cave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --bg-deep:#110A05; --bg-surface:#1E1008; --gold:#C4922A; --gold-light:#D4A843; --cream:#F0E6C8; --muted:#8A7050; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg-deep); color:var(--cream); font-family:'Lato',sans-serif; line-height:1.7; overflow-x:hidden; }
+    h1,h2,h3 { font-family:'Playfair Display',serif; letter-spacing:-0.02em; line-height:1.15; }
+
+    #navbar { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.5rem 2.5rem; display:flex; align-items:center; justify-content:space-between; background:rgba(17,10,5,0.97); box-shadow:0 4px 30px rgba(0,0,0,0.6); }
+    .nav-logo { display:flex; align-items:center; gap:0.8rem; text-decoration:none; }
+    .nav-logo img { width:40px; height:40px; object-fit:contain; border-radius:4px; }
+    .nav-logo-text { font-family:'Playfair Display',serif; font-size:0.95rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; }
+    .nav-links { display:flex; align-items:center; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--cream); text-decoration:none; font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; opacity:0.8; transition:color 0.2s ease, opacity 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); opacity:1; }
+    .nav-right { display:flex; align-items:center; gap:1rem; }
+    .lang-toggle { display:flex; background:rgba(196,146,42,0.1); border:1px solid rgba(196,146,42,0.25); border-radius:3px; overflow:hidden; }
+    .lang-toggle button { padding:0.28rem 0.65rem; font-size:0.68rem; letter-spacing:0.1em; font-weight:700; cursor:pointer; border:none; background:transparent; color:var(--muted); transition:background 0.2s ease, color 0.2s ease; }
+    .lang-toggle button.active { background:var(--gold); color:var(--bg-deep); }
+    .nav-call { display:flex; align-items:center; gap:0.4rem; background:var(--gold); color:var(--bg-deep); padding:0.45rem 1.1rem; border-radius:2px; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-decoration:none; transition:background 0.2s ease; }
+    .nav-call:hover { background:var(--gold-light); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--cream); }
+    .mobile-nav { display:none; position:fixed; inset:0; background:var(--bg-deep); z-index:99; flex-direction:column; align-items:center; justify-content:center; gap:2.2rem; }
+    .mobile-nav.open { display:flex; }
+    .mobile-nav a { font-family:'Playfair Display',serif; font-size:2rem; color:var(--cream); text-decoration:none; }
+    .mobile-nav a:hover { color:var(--gold); }
+
+    .page-hero { padding:10rem 2rem 5rem; text-align:center; background:var(--bg-surface); border-bottom:1px solid rgba(196,146,42,0.15); }
+    .page-eyebrow { font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:700; display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:1rem; }
+    .page-eyebrow::before, .page-eyebrow::after { content:''; display:block; width:28px; height:1px; background:var(--gold); }
+    .page-title { font-size:clamp(2.5rem,5vw,4.5rem); color:var(--cream); }
+    .page-title em { font-style:italic; color:var(--gold); }
+    .page-sub { font-size:0.95rem; color:var(--muted); margin-top:1rem; max-width:500px; margin-left:auto; margin-right:auto; }
+
+    /* MASONRY GALLERY */
+    .gallery-masonry {
+      columns: 3;
+      column-gap: 4px;
+      padding: 4rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 4px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0.97);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .gallery-item.visible { opacity:1; transform:scale(1); }
+    .gallery-item img { width:100%; display:block; filter:brightness(0.85) sepia(5%); transition:transform 0.5s ease, filter 0.35s ease; }
+    .gallery-item:hover img { transform:scale(1.04); filter:brightness(1) sepia(0%); }
+    .gallery-item-overlay { position:absolute; inset:0; background:rgba(0,0,0,0); display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:1.5rem; transition:background 0.35s ease; }
+    .gallery-item:hover .gallery-item-overlay { background:rgba(17,10,5,0.55); }
+    .gallery-item-caption { color:white; font-size:0.82rem; letter-spacing:0.08em; opacity:0; transform:translateY(8px); transition:opacity 0.3s ease, transform 0.3s ease; }
+    .gallery-item:hover .gallery-item-caption { opacity:1; transform:translateY(0); }
+    .gallery-zoom { position:absolute; top:1rem; right:1rem; width:36px; height:36px; background:rgba(196,146,42,0.9); border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s ease; color:var(--bg-deep); font-size:1rem; font-weight:700; }
+    .gallery-item:hover .gallery-zoom { opacity:1; }
+
+    /* LIGHTBOX */
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.97); z-index:200; align-items:center; justify-content:center; }
+    .lightbox.open { display:flex; }
+    .lightbox-inner { position:relative; max-width:92vw; max-height:92vh; }
+    .lightbox-inner img { max-width:100%; max-height:92vh; object-fit:contain; }
+    .lightbox-close { position:absolute; top:-2.5rem; right:0; background:none; border:none; color:rgba(255,255,255,0.7); font-size:1.8rem; cursor:pointer; transition:color 0.2s ease; line-height:1; }
+    .lightbox-close:hover { color:white; }
+    .lightbox-caption { position:absolute; bottom:-2.5rem; left:0; right:0; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.5); letter-spacing:0.1em; }
+    .lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(196,146,42,0.8); border:none; color:var(--bg-deep); width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s ease; }
+    .lightbox-nav:hover { background:var(--gold); }
+    .lightbox-prev { left:-3rem; }
+    .lightbox-next { right:-3rem; }
+
+    /* CTA */
+    .cta-section { text-align:center; padding:6rem 2rem; }
+    .btn-gold { display:inline-block; background:var(--gold); color:var(--bg-deep); padding:0.9rem 2.2rem; font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; border-radius:2px; transition:background 0.2s ease, transform 0.1s ease; }
+    .btn-gold:hover { background:var(--gold-light); transform:translateY(-2px); }
+
+    footer { background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.18); padding:3rem 2rem 2rem; }
+    .footer-grid { max-width:1200px; margin:0 auto 2.5rem; display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:3rem; }
+    .footer-brand img { width:52px; margin-bottom:1rem; border-radius:4px; }
+    .footer-brand p { font-size:0.82rem; color:var(--muted); line-height:1.7; }
+    .footer-title { font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:1.1rem; }
+    .footer-info p, .footer-info a { font-size:0.82rem; color:var(--muted); line-height:2.1; text-decoration:none; display:block; transition:color 0.2s ease; }
+    .footer-info a:hover { color:var(--cream); }
+    .footer-hours p { font-size:0.82rem; color:var(--muted); line-height:2.1; }
+    .footer-hours .open-now { color:#6abf69; font-weight:700; }
+    .footer-bottom { max-width:1200px; margin:0 auto; padding-top:1.5rem; border-top:1px solid rgba(196,146,42,0.1); display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); }
+    .wa-float { position:fixed; bottom:2rem; right:2rem; z-index:90; width:54px; height:54px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease; }
+    .wa-float:hover { transform:scale(1.1); }
+    .wa-float svg { width:28px; height:28px; fill:white; }
+
+    @media(max-width:900px) {
+      .nav-links { display:none; } .hamburger { display:flex; }
+      .gallery-masonry { columns:2; }
+      .footer-grid { grid-template-columns:1fr 1fr; } .footer-brand { grid-column:1/3; }
+      .lightbox-prev { left:-2rem; } .lightbox-next { right:-2rem; }
+    }
+    @media(max-width:600px) {
+      .gallery-masonry { columns:1; }
+      .footer-grid { grid-template-columns:1fr; } .footer-brand { grid-column:1; }
+      .footer-bottom { flex-direction:column; gap:0.5rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="images/logo.jpg" alt="Grand Barbers">
+    <span class="nav-logo-text">Grand Barbers</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" data-el="Αρχική" data-en="Home">Αρχική</a></li>
+    <li><a href="services.html" data-el="Υπηρεσίες" data-en="Services">Υπηρεσίες</a></li>
+    <li><a href="book.html" data-el="Ραντεβού" data-en="Book">Ραντεβού</a></li>
+    <li><a href="gallery.html" class="active" data-el="Gallery" data-en="Gallery">Gallery</a></li>
+    <li><a href="about.html" data-el="Σχετικά" data-en="About">Σχετικά</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button id="btn-el" class="active" onclick="setLang('el')">ΕΛ</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="tel:+302106624445" class="nav-call">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.2 2 2 0 012.1 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      210 662 4445
+    </a>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="toggleMenu()">Αρχική</a>
+  <a href="services.html" onclick="toggleMenu()">Υπηρεσίες</a>
+  <a href="book.html" onclick="toggleMenu()">Ραντεβού</a>
+  <a href="gallery.html" onclick="toggleMenu()">Gallery</a>
+  <a href="about.html" onclick="toggleMenu()">Σχετικά</a>
+</div>
+
+<div class="page-hero">
+  <p class="page-eyebrow" data-el="Φωτογραφίες" data-en="Photos">Φωτογραφίες</p>
+  <h1 class="page-title" data-el="Ο <em>Χώρος</em> μας" data-en="Our <em>Space</em>">Ο <em>Χώρος</em> μας</h1>
+  <p class="page-sub" data-el="Κάθε γωνιά του Men's Cave έχει τη δική της ιστορία. Ζήσε την ατμόσφαιρα." data-en="Every corner of the Men's Cave has its own story. Experience the atmosphere.">Κάθε γωνιά του Men's Cave έχει τη δική της ιστορία. Ζήσε την ατμόσφαιρα.</p>
+</div>
+
+<!-- GALLERY GRID -->
+<div class="gallery-masonry">
+  <div class="gallery-item" data-index="0" onclick="openLightbox(0)">
+    <img src="images/interior-wide.png" alt="Grand Barbers Interior" loading="lazy">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Ο χώρος μας" data-en="Our space">Ο χώρος μας</p>
+    </div>
+  </div>
+  <div class="gallery-item" data-index="1" onclick="openLightbox(1)">
+    <img src="images/chairs.png" alt="Barber Chairs" loading="lazy">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Οι καρέκλες μας" data-en="Our chairs">Οι καρέκλες μας</p>
+    </div>
+  </div>
+  <div class="gallery-item" data-index="2" onclick="openLightbox(2)">
+    <img src="images/detail-desk.png" alt="Reception Detail" loading="lazy">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Reception" data-en="Reception">Reception</p>
+    </div>
+  </div>
+  <!-- Repeat for visual richness with different captions -->
+  <div class="gallery-item" data-index="1" onclick="openLightbox(1)">
+    <img src="images/chairs.png" alt="Barber station" loading="lazy" style="object-position:right;">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Vintage καθρέφτες" data-en="Vintage mirrors">Vintage καθρέφτες</p>
+    </div>
+  </div>
+  <div class="gallery-item" data-index="0" onclick="openLightbox(0)">
+    <img src="images/interior-wide.png" alt="Interior atmosphere" loading="lazy" style="object-position:bottom;">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Η ατμόσφαιρα" data-en="The atmosphere">Η ατμόσφαιρα</p>
+    </div>
+  </div>
+  <div class="gallery-item" data-index="2" onclick="openLightbox(2)">
+    <img src="images/detail-desk.png" alt="Vintage telephone" loading="lazy">
+    <div class="gallery-item-overlay">
+      <div class="gallery-zoom">⊕</div>
+      <p class="gallery-item-caption" data-el="Vintage διακόσμηση" data-en="Vintage decor">Vintage διακόσμηση</p>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-nav lightbox-prev" onclick="prevImg()">‹</button>
+    <button class="lightbox-nav lightbox-next" onclick="nextImg()">›</button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div style="background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.12);">
+  <div class="cta-section">
+    <p style="font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:700; display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:1.5rem;" data-el="Σου άρεσε ο χώρος;" data-en="Like what you see?">Σου άρεσε ο χώρος;</p>
+    <h2 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,3.2rem); color:var(--cream); margin-bottom:1rem;" data-el="Έλα να το ζήσεις <em style='color:var(--gold); font-style:italic;'>από κοντά</em>" data-en="Come experience it <em style='color:var(--gold); font-style:italic;'>in person</em>">Έλα να το ζήσεις <em style="color:var(--gold); font-style:italic;">από κοντά</em></h2>
+    <p style="font-size:0.88rem; color:var(--muted); margin-bottom:2.5rem;" data-el="Κλείσε ραντεβού σήμερα · Κορωπί, Αττική" data-en="Book your appointment today · Koropi, Attica">Κλείσε ραντεβού σήμερα · Κορωπί, Αττική</p>
+    <a href="book.html" class="btn-gold" data-el="Κλείσε Ραντεβού" data-en="Book Now">Κλείσε Ραντεβού</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" alt="Grand Barbers Logo">
+      <p data-el="Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Est. 2022." data-en="Grand Barbers Men's Cave — Premium barbershop in Koropi, Attica. Est. 2022.">Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Est. 2022.</p>
+    </div>
+    <div class="footer-info">
+      <p class="footer-title" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</p>
+      <a href="https://maps.google.com/?q=Γεωρ.+Παπασιδέρη+4+Κορωπί" target="_blank">📍 Γεωρ. Παπασιδέρη 4, Κορωπί</a>
+      <a href="tel:+302106624445">📞 210 662 4445</a>
+    </div>
+    <div class="footer-hours">
+      <p class="footer-title" data-el="Ωράριο" data-en="Hours">Ωράριο</p>
+      <p data-el="Δευτ – Παρ: 09:00 – 20:00" data-en="Mon – Fri: 09:00 – 20:00">Δευτ – Παρ: 09:00 – 20:00</p>
+      <p data-el="Σάββατο: 09:00 – 18:00" data-en="Saturday: 09:00 – 18:00">Σάββατο: 09:00 – 18:00</p>
+      <p class="open-now" data-el="● Τώρα Ανοιχτά" data-en="● Open Now">● Τώρα Ανοιχτά</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Grand Barbers Men's Cave</span>
+    <span data-el="Σχεδιασμός με ♥" data-en="Designed with ♥">Σχεδιασμός με ♥</span>
+  </div>
+</footer>
+
+<a href="https://wa.me/302106624445" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  const images = [
+    { src: 'images/interior-wide.png', caption: 'Grand Barbers Interior' },
+    { src: 'images/chairs.png', caption: 'Barber Chairs' },
+    { src: 'images/detail-desk.png', caption: 'Reception Detail' },
+  ];
+  let currentImg = 0;
+
+  function openLightbox(idx) {
+    currentImg = idx;
+    document.getElementById('lightboxImg').src = images[currentImg].src;
+    document.getElementById('lightboxCaption').textContent = images[currentImg].caption;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function nextImg() { currentImg = (currentImg + 1) % images.length; openLightbox(currentImg); }
+  function prevImg() { currentImg = (currentImg - 1 + images.length) % images.length; openLightbox(currentImg); }
+
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextImg();
+    if (e.key === 'ArrowLeft') prevImg();
+  });
+
+  let currentLang = 'el';
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById('btn-el').classList.toggle('active', lang === 'el');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-el]').forEach(el => {
+      const val = lang === 'el' ? el.getAttribute('data-el') : el.getAttribute('data-en');
+      if (val !== null) el.innerHTML = val;
+    });
+  }
+  function toggleMenu() {
+    const mn = document.getElementById('mobileNav');
+    mn.classList.toggle('open');
+    document.body.style.overflow = mn.classList.contains('open') ? 'hidden' : '';
+  }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.gallery-item').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Σχετικά — Grand Barbers Men's Cave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --bg-deep:#110A05; --bg-surface:#1E1008; --gold:#C4922A; --gold-light:#D4A843; --cream:#F0E6C8; --muted:#8A7050; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg-deep); color:var(--cream); font-family:'Lato',sans-serif; line-height:1.7; overflow-x:hidden; }
+    h1,h2,h3 { font-family:'Playfair Display',serif; letter-spacing:-0.02em; line-height:1.15; }
+
+    #navbar { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.5rem 2.5rem; display:flex; align-items:center; justify-content:space-between; background:rgba(17,10,5,0.97); box-shadow:0 4px 30px rgba(0,0,0,0.6); }
+    .nav-logo { display:flex; align-items:center; gap:0.8rem; text-decoration:none; }
+    .nav-logo img { width:40px; height:40px; object-fit:contain; border-radius:4px; }
+    .nav-logo-text { font-family:'Playfair Display',serif; font-size:0.95rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; }
+    .nav-links { display:flex; align-items:center; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--cream); text-decoration:none; font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; opacity:0.8; transition:color 0.2s ease, opacity 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); opacity:1; }
+    .nav-right { display:flex; align-items:center; gap:1rem; }
+    .lang-toggle { display:flex; background:rgba(196,146,42,0.1); border:1px solid rgba(196,146,42,0.25); border-radius:3px; overflow:hidden; }
+    .lang-toggle button { padding:0.28rem 0.65rem; font-size:0.68rem; letter-spacing:0.1em; font-weight:700; cursor:pointer; border:none; background:transparent; color:var(--muted); transition:background 0.2s ease, color 0.2s ease; }
+    .lang-toggle button.active { background:var(--gold); color:var(--bg-deep); }
+    .nav-call { display:flex; align-items:center; gap:0.4rem; background:var(--gold); color:var(--bg-deep); padding:0.45rem 1.1rem; border-radius:2px; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-decoration:none; transition:background 0.2s ease; }
+    .nav-call:hover { background:var(--gold-light); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--cream); }
+    .mobile-nav { display:none; position:fixed; inset:0; background:var(--bg-deep); z-index:99; flex-direction:column; align-items:center; justify-content:center; gap:2.2rem; }
+    .mobile-nav.open { display:flex; }
+    .mobile-nav a { font-family:'Playfair Display',serif; font-size:2rem; color:var(--cream); text-decoration:none; }
+    .mobile-nav a:hover { color:var(--gold); }
+
+    /* HERO - full bleed with chairs image */
+    .about-hero { position:relative; min-height:65vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .about-hero-bg { position:absolute; inset:0; }
+    .about-hero-bg img { width:100%; height:100%; object-fit:cover; object-position:center; filter:brightness(0.35) sepia(20%); }
+    .about-hero-bg::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(17,10,5,0.2) 0%, rgba(17,10,5,0.7) 100%); }
+    .about-hero-content { position:relative; z-index:2; text-align:center; padding:10rem 2rem 5rem; }
+    .page-eyebrow { font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:700; display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:1.2rem; }
+    .page-eyebrow::before, .page-eyebrow::after { content:''; display:block; width:28px; height:1px; background:var(--gold); }
+    .page-title { font-size:clamp(2.8rem,6vw,5.5rem); color:var(--cream); }
+    .page-title em { font-style:italic; color:var(--gold); }
+
+    /* STORY */
+    .story-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; max-width:1100px; margin:0 auto; padding:6rem 2rem; }
+    .story-image { position:relative; opacity:0; transform:translateX(-40px); transition:opacity 0.7s ease, transform 0.7s ease; }
+    .story-image.visible { opacity:1; transform:translateX(0); }
+    .story-image img { width:100%; height:480px; object-fit:cover; filter:sepia(8%) contrast(108%); }
+    .story-image::before { content:'EST.\A2022'; white-space:pre; position:absolute; bottom:-1.5rem; left:-1.5rem; background:var(--gold); color:var(--bg-deep); padding:1.5rem 2rem; font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; text-align:center; line-height:1.3; z-index:2; }
+    .story-text { opacity:0; transform:translateX(40px); transition:opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s; }
+    .story-text.visible { opacity:1; transform:translateX(0); }
+    .story-text h2 { font-size:clamp(2rem,3vw,2.8rem); color:var(--cream); margin-bottom:1.5rem; }
+    .story-text h2 em { font-style:italic; color:var(--gold); }
+    .story-text p { font-size:0.92rem; color:var(--muted); line-height:1.85; margin-bottom:1.1rem; }
+    .section-eyebrow { font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:700; display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; }
+    .section-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--gold); }
+
+    /* VALUES */
+    .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(196,146,42,0.1); border:1px solid rgba(196,146,42,0.1); }
+    .value-card { background:var(--bg-deep); padding:2.5rem 2rem; opacity:0; transform:translateY(22px); transition:opacity 0.55s ease, transform 0.55s ease; }
+    .value-card.visible { opacity:1; transform:translateY(0); }
+    .value-card:hover { background:var(--bg-surface); }
+    .value-icon { font-size:2rem; margin-bottom:1.2rem; display:block; }
+    .value-title { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--cream); margin-bottom:0.7rem; }
+    .value-desc { font-size:0.83rem; color:var(--muted); line-height:1.7; }
+
+    /* TESTIMONIALS FULL */
+    .testimonials-bg { background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.1); border-bottom:1px solid rgba(196,146,42,0.1); padding:6rem 0; }
+    .testimonials-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; max-width:1100px; margin:0 auto; padding:0 2rem; }
+    .testimonial { border:1px solid rgba(196,146,42,0.13); background:var(--bg-deep); padding:2rem; opacity:0; transform:translateY(18px); transition:opacity 0.55s ease, transform 0.55s ease; }
+    .testimonial.visible { opacity:1; transform:translateY(0); }
+    .testimonial-stars { color:var(--gold); font-size:0.85rem; margin-bottom:1rem; }
+    .testimonial-text { font-size:0.85rem; color:rgba(240,230,200,0.78); line-height:1.75; font-style:italic; margin-bottom:1.2rem; }
+    .testimonial-author { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); font-weight:700; }
+
+    /* STATS BIG */
+    .stats-big { display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-top:1px solid rgba(196,146,42,0.15); border-bottom:1px solid rgba(196,146,42,0.15); }
+    .stat-big { text-align:center; padding:4rem 2rem; border-right:1px solid rgba(196,146,42,0.1); opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+    .stat-big:last-child { border-right:none; }
+    .stat-big.visible { opacity:1; transform:translateY(0); }
+    .stat-big-value { font-family:'Playfair Display',serif; font-size:3.5rem; color:var(--gold); line-height:1; margin-bottom:0.5rem; }
+    .stat-big-label { font-size:0.7rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); }
+
+    /* CTA */
+    .cta-section { text-align:center; padding:7rem 2rem; position:relative; overflow:hidden; }
+    .cta-section::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center, rgba(196,146,42,0.07) 0%, transparent 65%); }
+    .btn-gold { display:inline-block; background:var(--gold); color:var(--bg-deep); padding:0.9rem 2.2rem; font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; border-radius:2px; transition:background 0.2s ease, transform 0.1s ease; }
+    .btn-gold:hover { background:var(--gold-light); transform:translateY(-2px); }
+
+    footer { background:var(--bg-surface); border-top:1px solid rgba(196,146,42,0.18); padding:3rem 2rem 2rem; }
+    .footer-grid { max-width:1200px; margin:0 auto 2.5rem; display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:3rem; }
+    .footer-brand img { width:52px; margin-bottom:1rem; border-radius:4px; }
+    .footer-brand p { font-size:0.82rem; color:var(--muted); line-height:1.7; }
+    .footer-title { font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:1.1rem; }
+    .footer-info p, .footer-info a { font-size:0.82rem; color:var(--muted); line-height:2.1; text-decoration:none; display:block; transition:color 0.2s ease; }
+    .footer-info a:hover { color:var(--cream); }
+    .footer-hours p { font-size:0.82rem; color:var(--muted); line-height:2.1; }
+    .footer-hours .open-now { color:#6abf69; font-weight:700; }
+    .footer-bottom { max-width:1200px; margin:0 auto; padding-top:1.5rem; border-top:1px solid rgba(196,146,42,0.1); display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); }
+    .wa-float { position:fixed; bottom:2rem; right:2rem; z-index:90; width:54px; height:54px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease; }
+    .wa-float:hover { transform:scale(1.1); }
+    .wa-float svg { width:28px; height:28px; fill:white; }
+
+    @media(max-width:900px) {
+      .nav-links { display:none; } .hamburger { display:flex; }
+      .story-grid { grid-template-columns:1fr; gap:3rem; }
+      .story-image::before { display:none; }
+      .values-grid { grid-template-columns:1fr 1fr; }
+      .testimonials-grid { grid-template-columns:1fr; }
+      .stats-big { grid-template-columns:1fr 1fr; }
+      .stat-big { border-right:none; border-bottom:1px solid rgba(196,146,42,0.1); }
+      .footer-grid { grid-template-columns:1fr 1fr; } .footer-brand { grid-column:1/3; }
+    }
+    @media(max-width:600px) {
+      .values-grid { grid-template-columns:1fr; }
+      .stats-big { grid-template-columns:1fr 1fr; }
+      .footer-grid { grid-template-columns:1fr; } .footer-brand { grid-column:1; }
+      .footer-bottom { flex-direction:column; gap:0.5rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="images/logo.jpg" alt="Grand Barbers">
+    <span class="nav-logo-text">Grand Barbers</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" data-el="Αρχική" data-en="Home">Αρχική</a></li>
+    <li><a href="services.html" data-el="Υπηρεσίες" data-en="Services">Υπηρεσίες</a></li>
+    <li><a href="book.html" data-el="Ραντεβού" data-en="Book">Ραντεβού</a></li>
+    <li><a href="gallery.html" data-el="Gallery" data-en="Gallery">Gallery</a></li>
+    <li><a href="about.html" class="active" data-el="Σχετικά" data-en="About">Σχετικά</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button id="btn-el" class="active" onclick="setLang('el')">ΕΛ</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="tel:+302106624445" class="nav-call">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.2 2 2 0 012.1 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      210 662 4445
+    </a>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="toggleMenu()">Αρχική</a>
+  <a href="services.html" onclick="toggleMenu()">Υπηρεσίες</a>
+  <a href="book.html" onclick="toggleMenu()">Ραντεβού</a>
+  <a href="gallery.html" onclick="toggleMenu()">Gallery</a>
+  <a href="about.html" onclick="toggleMenu()">Σχετικά</a>
+</div>
+
+<!-- HERO -->
+<div class="about-hero">
+  <div class="about-hero-bg">
+    <img src="images/interior-wide.png" alt="Grand Barbers Interior">
+  </div>
+  <div class="about-hero-content">
+    <p class="page-eyebrow" data-el="Η ιστορία μας" data-en="Our story">Η ιστορία μας</p>
+    <h1 class="page-title" data-el="Men's <em>Cave</em>" data-en="Men's <em>Cave</em>">Men's <em>Cave</em></h1>
+  </div>
+</div>
+
+<!-- STORY -->
+<div class="story-grid">
+  <div class="story-image" id="storyImg">
+    <img src="images/chairs.png" alt="Grand Barbers chairs" loading="lazy">
+  </div>
+  <div class="story-text" id="storyText">
+    <p class="section-eyebrow" data-el="Ποιοι είμαστε" data-en="Who we are">Ποιοι είμαστε</p>
+    <h2 data-el="Ένα κουρείο <em>διαφορετικό</em> από όλα" data-en="A barbershop <em>unlike</em> any other">Ένα κουρείο <em>διαφορετικό</em> από όλα</h2>
+    <p data-el="Το Grand Barbers γεννήθηκε το 2022 από έναν απλό στόχο: να φέρουμε στο Κορωπί ένα κουρείο που να αξίζει πραγματικά την επίσκεψη. Όχι ακόμα ένα «μοντέρνο» μαγαζί, αλλά ένα Men's Cave — ένας χώρος που σε αγκαλιάζει από τη στιγμή που μπαίνεις." data-en="Grand Barbers was born in 2022 from a simple goal: to bring Koropi a barbershop truly worth visiting. Not another 'modern' shop, but a Men's Cave — a space that embraces you from the moment you walk in.">Το Grand Barbers γεννήθηκε το 2022 από έναν απλό στόχο: να φέρουμε στο Κορωπί ένα κουρείο που να αξίζει πραγματικά την επίσκεψη. Όχι ακόμα ένα «μοντέρνο» μαγαζί, αλλά ένα Men's Cave — ένας χώρος που σε αγκαλιάζει από τη στιγμή που μπαίνεις.</p>
+    <p data-el="Επενδύσαμε σε κάθε λεπτομέρεια: handcrafted καρέκλες, vintage χρυσοί καθρέφτες, εκτεθειμένα τούβλα, crystal chandelier, vintage rotary τηλέφωνο. Γιατί πιστεύουμε ότι το grooming δεν είναι απλώς ένα κούρεμα. Είναι τελετουργία." data-en="We invested in every detail: handcrafted chairs, vintage gold mirrors, exposed brick, crystal chandelier, vintage rotary telephone. Because we believe grooming isn't just a haircut. It's a ritual.">Επενδύσαμε σε κάθε λεπτομέρεια: handcrafted καρέκλες, vintage χρυσοί καθρέφτες, εκτεθειμένα τούβλα, crystal chandelier, vintage rotary τηλέφωνο. Γιατί πιστεύουμε ότι το grooming δεν είναι απλώς ένα κούρεμα. Είναι τελετουργία.</p>
+    <p data-el="Τρία χρόνια μετά, 116+ αξιολογήσεις και 4.9 αστέρια στο Google αποδεικνύουν ότι κάνουμε κάτι σωστά." data-en="Three years later, 116+ reviews and 4.9 stars on Google prove we're doing something right.">Τρία χρόνια μετά, 116+ αξιολογήσεις και 4.9 αστέρια στο Google αποδεικνύουν ότι κάνουμε κάτι σωστά.</p>
+  </div>
+</div>
+
+<!-- STATS BIG -->
+<div class="stats-big">
+  <div class="stat-big">
+    <div class="stat-big-value">4.9</div>
+    <div class="stat-big-label">Google ★★★★★</div>
+  </div>
+  <div class="stat-big">
+    <div class="stat-big-value">116+</div>
+    <div class="stat-big-label" data-el="Verified Reviews" data-en="Verified Reviews">Verified Reviews</div>
+  </div>
+  <div class="stat-big">
+    <div class="stat-big-value">3+</div>
+    <div class="stat-big-label" data-el="Χρόνια εμπειρίας" data-en="Years of experience">Χρόνια εμπειρίας</div>
+  </div>
+  <div class="stat-big">
+    <div class="stat-big-value">#1</div>
+    <div class="stat-big-label" data-el="Στο Κορωπί" data-en="In Koropi">Στο Κορωπί</div>
+  </div>
+</div>
+
+<!-- VALUES -->
+<div style="padding:6rem 2rem; background:var(--bg-deep);">
+  <div style="max-width:1100px; margin:0 auto;">
+    <p class="section-eyebrow" style="margin-bottom:1rem;" data-el="Τι μας κάνει διαφορετικούς" data-en="What makes us different">Τι μας κάνει διαφορετικούς</p>
+    <h2 style="font-size:clamp(1.8rem,3vw,2.8rem); color:var(--cream); margin-bottom:3rem;" data-el="Οι <em style='color:var(--gold);font-style:italic;'>Αξίες</em> μας" data-en="Our <em style='color:var(--gold);font-style:italic;'>Values</em>">Οι <em style="color:var(--gold);font-style:italic;">Αξίες</em> μας</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-icon">✂️</span>
+        <div class="value-title" data-el="Τεχνογνωσία" data-en="Craftsmanship">Τεχνογνωσία</div>
+        <p class="value-desc" data-el="Κάθε κούρεμα εκτελείται με ακρίβεια και σεβασμό. Εξειδικευμένοι επαγγελματίες που αγαπούν αυτό που κάνουν." data-en="Every haircut executed with precision and care. Specialized professionals who love what they do.">Κάθε κούρεμα εκτελείται με ακρίβεια και σεβασμό. Εξειδικευμένοι επαγγελματίες που αγαπούν αυτό που κάνουν.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🕰️</span>
+        <div class="value-title" data-el="Συνέπεια" data-en="Punctuality">Συνέπεια</div>
+        <p class="value-desc" data-el="Πάντα στην ώρα μας. Σεβόμαστε τον χρόνο σου όπως σεβόμαστε τη δουλειά μας." data-en="Always on time. We respect your time as much as our craft.">Πάντα στην ώρα μας. Σεβόμαστε τον χρόνο σου όπως σεβόμαστε τη δουλειά μας.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🏛️</span>
+        <div class="value-title" data-el="Ατμόσφαιρα" data-en="Atmosphere">Ατμόσφαιρα</div>
+        <p class="value-desc" data-el="Ένας χώρος που ξεχωρίζει. Κάθε επίσκεψη είναι εμπειρία, όχι απλά ένα κούρεμα." data-en="A space that stands out. Every visit is an experience, not just a haircut.">Ένας χώρος που ξεχωρίζει. Κάθε επίσκεψη είναι εμπειρία, όχι απλά ένα κούρεμα.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="testimonials-bg">
+  <div style="max-width:1100px; margin:0 auto; padding:0 2rem;">
+    <p class="section-eyebrow" data-el="Τι λένε οι πελάτες μας" data-en="What our clients say">Τι λένε οι πελάτες μας</p>
+    <h2 style="font-size:clamp(1.8rem,3vw,2.8rem); color:var(--cream); margin-bottom:3rem;" data-el="<em style='color:var(--gold);font-style:italic;'>116</em> Λόγοι να έρθεις" data-en="<em style='color:var(--gold);font-style:italic;'>116</em> Reasons to visit"><em style="color:var(--gold);font-style:italic;">116</em> Λόγοι να έρθεις</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text" data-el='"Εξαιρετικοί, όλα τα παιδιά είναι άψογοι επαγγελματίες με ευχάριστη διάθεση που σου προσφέρουν μια πραγματική εμπειρία. Τους συνιστώ ανεπιφύλακτα."' data-en='"Outstanding, all the guys are impeccable professionals with a wonderful attitude who offer a truly premium experience. Highly recommended."'>"Εξαιρετικοί, όλα τα παιδιά είναι άψογοι επαγγελματίες με ευχάριστη διάθεση που σου προσφέρουν μια πραγματική εμπειρία. Τους συνιστώ ανεπιφύλακτα."</p>
+        <div class="testimonial-author">Γιώργος Γκίνης</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text" data-el='"Εξαιρετικός χώρος που θυμίζει μπαρμπέρικο εξωτερικού. Πάντα συνεπείς στο ραντεβού, χωρίς καθυστερήσεις. Εδώ και χρόνια είναι η αποκλειστική μου επιλογή."' data-en='"An extraordinary space that feels like an international barbershop. Always on time, no delays. For years now, my exclusive choice."'>"Εξαιρετικός χώρος που θυμίζει μπαρμπέρικο εξωτερικού. Πάντα συνεπείς στο ραντεβού, χωρίς καθυστερήσεις. Εδώ και χρόνια είναι η αποκλειστική μου επιλογή."</p>
+        <div class="testimonial-author">Vassilis Protonotarios</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text" data-el='"Πολύ καλά παιδιά και γνώστες του αντικειμένου τους, ωραίος χώρος, καμία σχέση με τα δήθεν μπαρμπέρικα που ξεφυτρώνουν."' data-en='"Very skilled guys who know their craft. Beautiful space — nothing like the generic wannabe barbershops popping up everywhere."'>"Πολύ καλά παιδιά και γνώστες του αντικειμένου τους, ωραίος χώρος, καμία σχέση με τα δήθεν μπαρμπέρικα που ξεφυτρώνουν."</p>
+        <div class="testimonial-author">Constantinos Karagiannis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div style="background:var(--bg-deep);">
+  <div class="cta-section">
+    <p class="section-eyebrow" style="justify-content:center; margin-bottom:1.5rem;" data-el="Είσαι έτοιμος;" data-en="Ready?">Είσαι έτοιμος;</p>
+    <h2 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.5rem); color:var(--cream); margin-bottom:1rem;" data-el="Έλα να <em style='color:var(--gold);font-style:italic;'>γνωριστούμε</em>" data-en="Come and <em style='color:var(--gold);font-style:italic;'>meet us</em>">Έλα να <em style="color:var(--gold);font-style:italic;">γνωριστούμε</em></h2>
+    <p style="font-size:0.88rem; color:var(--muted); margin-bottom:2.5rem;" data-el="Γεωρ. Παπασιδέρη 4, Κορωπί · 210 662 4445" data-en="Georgiou Papasideri 4, Koropi · 210 662 4445">Γεωρ. Παπασιδέρη 4, Κορωπί · 210 662 4445</p>
+    <a href="book.html" class="btn-gold" data-el="Κλείσε Ραντεβού" data-en="Book Now">Κλείσε Ραντεβού</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" alt="Grand Barbers Logo">
+      <p data-el="Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Est. 2022." data-en="Grand Barbers Men's Cave — Premium barbershop in Koropi, Attica. Est. 2022.">Grand Barbers Men's Cave — Premium κουρείο στο Κορωπί, Αττική. Est. 2022.</p>
+    </div>
+    <div class="footer-info">
+      <p class="footer-title" data-el="Επικοινωνία" data-en="Contact">Επικοινωνία</p>
+      <a href="https://maps.google.com/?q=Γεωρ.+Παπασιδέρη+4+Κορωπί" target="_blank">📍 Γεωρ. Παπασιδέρη 4, Κορωπί</a>
+      <a href="tel:+302106624445">📞 210 662 4445</a>
+    </div>
+    <div class="footer-hours">
+      <p class="footer-title" data-el="Ωράριο" data-en="Hours">Ωράριο</p>
+      <p data-el="Δευτ – Παρ: 09:00 – 20:00" data-en="Mon – Fri: 09:00 – 20:00">Δευτ – Παρ: 09:00 – 20:00</p>
+      <p data-el="Σάββατο: 09:00 – 18:00" data-en="Saturday: 09:00 – 18:00">Σάββατο: 09:00 – 18:00</p>
+      <p class="open-now" data-el="● Τώρα Ανοιχτά" data-en="● Open Now">● Τώρα Ανοιχτά</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Grand Barbers Men's Cave</span>
+    <span data-el="Σχεδιασμός με ♥" data-en="Designed with ♥">Σχεδιασμός με ♥</span>
+  </div>
+</footer>
+
+<a href="https://wa.me/302106624445" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  let currentLang = 'el';
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById('btn-el').classList.toggle('active', lang === 'el');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-el]').forEach(el => {
+      const val = lang === 'el' ? el.getAttribute('data-el') : el.getAttribute('data-en');
+      if (val !== null) el.innerHTML = val;
+    });
+  }
+  function toggleMenu() {
+    const mn = document.getElementById('mobileNav');
+    mn.classList.toggle('open');
+    document.body.style.overflow = mn.classList.contains('open') ? 'hidden' : '';
+  }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  ['storyImg','storyText'].forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+  document.querySelectorAll('.value-card, .testimonial, .stat-big').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
